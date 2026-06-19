@@ -305,7 +305,7 @@
 </div>
 
 <script>
-    // PERBAIKAN UTAMA: PORT 443 AMAN UNTUK SECURE WEBSOCKETS (HTTPS VERCEL)
+    // FIX TOTAL: PORT 443 DAN PATH "" ADALAH STANDAR UTAMA SSL EMQX UNTUK HTTPS VERCEL
     const broker = "broker.emqx.io";
     const port = 443; 
     let deviceId = ""; 
@@ -315,7 +315,7 @@
     let topic_sistem = "";
 
     const clientId = "web_yusuf_client_" + Math.floor(Math.random() * 100000);
-    const mqtt = new Paho.MQTT.Client(broker, port, "/mqtt", clientId);
+    const mqtt = new Paho.MQTT.Client(broker, port, "", clientId);
 
     function prosesLogin() {
         const inputVal = document.getElementById("input-device-id").value.trim().toLowerCase();
@@ -340,12 +340,12 @@
 
     function sambungkanMQTT() {
         mqtt.connect({ 
-            useSSL: true, // WAJIB TRUE AGAR ENKRIPSI COCOK DENGAN HTTPS VERCEL
+            useSSL: true, // Wajib true karena web dilayani dari HTTPS Vercel
             timeout: 5,
             onSuccess: () => {
                 updateStatusBadge(true);
                 mqtt.subscribe(topic_sampah); 
-                console.log("Sukses Terhubung ke Broker Aman EMQX!");
+                console.log("Sukses Terhubung ke Jalur Aman EMQX Port 443!");
             },
             onFailure: (err) => {
                 updateStatusBadge(false);
@@ -405,9 +405,13 @@
             } else {
                 teksStatus.innerHTML = '<span class="text-success">Kondisi Aman</span>';
             }
-            lingkaran.style.background = `conic-gradient(${warnaGrafik} ${persen * 3.6}deg, #cbd5e1 0deg)`;
+            circleGradient(lingkaran, warnaGrafik, persen);
         }
     };
+
+    function circleGradient(element, color, percentage) {
+        element.style.background = `conic-gradient(${color} ${percentage * 3.6}deg, #cbd5e1 0deg)`;
+    }
 
     function kirimKontrol(perintah) {
         if (!mqtt.isConnected()) return;
