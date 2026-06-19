@@ -305,8 +305,8 @@
 </div>
 
 <script>
-    // FIX TOTAL: PORT 443 DAN PATH "" ADALAH STANDAR UTAMA SSL EMQX UNTUK HTTPS VERCEL
-    const broker = "broker.emqx.io";
+    // FIX TOTAL: PINDAH KE BROKER HIVEMQ KARENA JALUR SSL PORT 443 NYA JAUH LEBIH STABIL
+    const broker = "broker.hivemq.com";
     const port = 443; 
     let deviceId = ""; 
     
@@ -315,7 +315,8 @@
     let topic_sistem = "";
 
     const clientId = "web_yusuf_client_" + Math.floor(Math.random() * 100000);
-    const mqtt = new Paho.MQTT.Client(broker, port, "", clientId);
+    // HiveMQ membutuhkan path "/mqtt" pada port secure 443
+    const mqtt = new Paho.MQTT.Client(broker, port, "/mqtt", clientId);
 
     function prosesLogin() {
         const inputVal = document.getElementById("input-device-id").value.trim().toLowerCase();
@@ -340,12 +341,12 @@
 
     function sambungkanMQTT() {
         mqtt.connect({ 
-            useSSL: true, // Wajib true karena web dilayani dari HTTPS Vercel
+            useSSL: true, // Berjalan aman di atas HTTPS Vercel
             timeout: 5,
             onSuccess: () => {
                 updateStatusBadge(true);
                 mqtt.subscribe(topic_sampah); 
-                console.log("Sukses Terhubung ke Jalur Aman EMQX Port 443!");
+                console.log("Sukses Terhubung ke Jalur Aman HiveMQ!");
             },
             onFailure: (err) => {
                 updateStatusBadge(false);
