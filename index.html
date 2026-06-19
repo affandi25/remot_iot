@@ -307,7 +307,7 @@
 <script>
     // FIX TOTAL: PINDAH KE BROKER HIVEMQ KARENA JALUR SSL PORT 443 NYA JAUH LEBIH STABIL
     const broker = "broker.hivemq.com";
-    const port = 443; 
+    const port = 8000; 
     let deviceId = ""; 
     
     let topic_mobil = "";
@@ -341,7 +341,7 @@
 
     function sambungkanMQTT() {
         mqtt.connect({ 
-            useSSL: true, // Berjalan aman di atas HTTPS Vercel
+            useSSL: false, // Berjalan aman di atas HTTPS Vercel
             timeout: 5,
             onSuccess: () => {
                 updateStatusBadge(true);
