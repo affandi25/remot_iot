@@ -305,8 +305,9 @@
 </div>
 
 <script>
+    // PERBAIKAN UTAMA: PORT 443 AMAN UNTUK SECURE WEBSOCKETS (HTTPS VERCEL)
     const broker = "broker.emqx.io";
-    const port = 8083; 
+    const port = 443; 
     let deviceId = ""; 
     
     let topic_mobil = "";
@@ -325,7 +326,6 @@
         
         deviceId = inputVal; 
 
-        // RAKIT TOPIK DINAMIS BERDASARKAN INPUT LOGIN
         topic_mobil  = "yusuf/projek/" + deviceId + "/mobil";
         topic_sampah = "yusuf/projek/" + deviceId + "/sampah";
         topic_sistem = "yusuf/projek/" + deviceId + "/sistem_aktif";
@@ -340,11 +340,16 @@
 
     function sambungkanMQTT() {
         mqtt.connect({ 
-            useSSL: false, 
-            timeout: 3,
+            useSSL: true, // WAJIB TRUE AGAR ENKRIPSI COCOK DENGAN HTTPS VERCEL
+            timeout: 5,
             onSuccess: () => {
                 updateStatusBadge(true);
                 mqtt.subscribe(topic_sampah); 
+                console.log("Sukses Terhubung ke Broker Aman EMQX!");
+            },
+            onFailure: (err) => {
+                updateStatusBadge(false);
+                console.log("Gagal Terhubung: " + err.errorMessage);
             }
         });
     }
